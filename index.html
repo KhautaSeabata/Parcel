@@ -30,8 +30,7 @@
         .poster-container {
             position: relative;
             perspective: 1000px;
-            animation: floatIn 2s ease-out;
-            z-index: 1;
+            animation: shine 4s infinite;
         }
 
         .poster {
@@ -43,7 +42,8 @@
             overflow: hidden;
             position: relative;
             transform-style: preserve-3d;
-            animation: cardHover 6s ease-in-out infinite;
+            animation: cardHover 6s ease-in-out infinite, floatIn 2s ease-out;
+            z-index: 1;
         }
 
         .header {
@@ -425,6 +425,13 @@
             margin: 0;
         }
 
+        .email-note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
         /* Animations */
         @keyframes floatIn {
             from { 
@@ -513,8 +520,8 @@
     <div class="poster-container">
         <div class="poster">
             <div class="header">
-                <h1 class="main-title">Kesfeng...?</h1>
-                <p class="subtitle">Need Your Parcel Delivered</p>
+                <h1 class="main-title">Kesfeng</h1>
+                <p class="subtitle">Your Trusted Delivery Partner</p>
                 <div class="price-tag">R34.99</div>
             </div>
             
@@ -572,27 +579,28 @@
             <div class="modal-body">
                 <div id="userStatus" class="user-status" style="display: none;">
                     <div class="status-icon">👋</div>
-                    <p class="status-text" id="statusText">Welcome back!</p>
+                    <p class="status-text" id="statusText">Welcome!</p>
                 </div>
 
                 <form id="deliveryForm" onsubmit="submitDeliveryRequest(event)">
                     <div class="form-group">
                         <label class="form-label">Email Address</label>
-                        <input type="email" class="form-input" id="userEmail" required placeholder="your@email.com" onblur="checkExistingUser()">
+                        <input type="email" class="form-input" id="userEmail" placeholder="your@email.com (optional)" onblur="checkExistingUser()">
+                        <div class="email-note">Email is optional but helps us keep you updated and maintain your delivery history</div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Full Name</label>
+                        <label class="form-label">Full Name *</label>
                         <input type="text" class="form-input" id="fullName" required placeholder="Enter your full name">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Phone Number</label>
+                        <label class="form-label">Phone Number *</label>
                         <input type="tel" class="form-input" id="phoneNumber" required placeholder="e.g., +266 5190 1995">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">From District</label>
+                        <label class="form-label">From District *</label>
                         <select class="form-select" id="fromDistrict" required>
                             <option value="">Select pickup district</option>
                             <option value="Maseru">Maseru</option>
@@ -609,7 +617,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">To District</label>
+                        <label class="form-label">To District *</label>
                         <select class="form-select" id="toDistrict" required>
                             <option value="">Select delivery district</option>
                             <option value="Maseru">Maseru</option>
@@ -801,8 +809,11 @@
         let currentUserData = null;
 
         async function checkExistingUser() {
-            const email = document.getElementById('userEmail').value;
-            if (!email) return;
+            const email = document.getElementById('userEmail').value.trim();
+            if (!email) {
+                document.getElementById('userStatus').style.display = 'none';
+                return;
+            }
 
             try {
                 const userRef = database.ref('users').orderByChild('email').equalTo(email);
@@ -843,10 +854,10 @@
             const message = encodeURIComponent(
                 `🚨 NEW DELIVERY REQUEST 🚨\n\n` +
                 `👤 Customer: ${customerData.fullName}\n` +
-                `📧 Email: ${customerData.email}\n` +
+                `📧 Email: ${customerData.email || 'Not provided'}\n` +
                 `📱 Phone: ${customerData.phoneNumber}\n` +
                 `📍 Route: ${customerData.fromDistrict} → ${customerData.toDistrict}\n` +
-                `📦 Package: ${customerData.packageDescription}\n` +
+                `📦 Package: ${customerData.packageDescription || 'No description'}\n` +
                 `⏰ Time: ${new Date(customerData.timestamp).toLocaleString()}\n\n` +
                 `Please respond to this customer promptly! 🚛`
             );
@@ -875,41 +886,58 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             submitBtn.disabled = true;
 
-            const email = document.getElementById('userEmail').value;
-            const fullName = document.getElementById('fullName').value;
-            const phoneNumber = document.getElementById('phoneNumber').value;
+            const email = document.getElementById('userEmail').value.trim() || null;
+            const fullName = document.getElementById('fullName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+
+            // Generate unique customer ID if no email provided
+            const customerId = email || `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
             const formData = {
                 email: email,
+                customerId: customerId,
                 fullName: fullName,
                 phoneNumber: phoneNumber,
                 fromDistrict: document.getElementById('fromDistrict').value,
                 toDistrict: document.getElementById('toDistrict').value,
-                packageDescription: document.getElementById('packageDescription').value || 'No description',
+                packageDescription: document.getElementById('packageDescription').value || 'No description provided',
                 timestamp: new Date().toISOString(),
                 status: 'pending'
             };
 
             try {
-                // Register/Update user
-                if (!currentUserData) {
-                    const userRef = database.ref('users');
-                    await userRef.push({
-                        email: email,
+                // Register/Update user only if email is provided
+                if (email) {
+                    const userRef = database.ref('users').orderByChild('email').equalTo(email);
+                    const snapshot = await userRef.once('value');
+                    
+                    if (!snapshot.exists()) {
+                        // New user with email
+                        await database.ref('users').push({
+                            email: email,
+                            fullName: fullName,
+                            phoneNumber: phoneNumber,
+                            registeredAt: new Date().toISOString(),
+                            isSubscribed: true,
+                            customerId: customerId
+                        });
+                    } else {
+                        // Update existing user
+                        const userKey = Object.keys(snapshot.val())[0];
+                        await database.ref(`users/${userKey}`).update({
+                            fullName: fullName,
+                            phoneNumber: phoneNumber,
+                            lastActivity: new Date().toISOString()
+                        });
+                    }
+                } else {
+                    // Create guest user record
+                    await database.ref('guestUsers').push({
+                        customerId: customerId,
                         fullName: fullName,
                         phoneNumber: phoneNumber,
                         registeredAt: new Date().toISOString(),
-                        isSubscribed: true
-                    });
-                } else {
-                    // Update existing user info if changed
-                    const userRef = database.ref('users').orderByChild('email').equalTo(email);
-                    const snapshot = await userRef.once('value');
-                    const userKey = Object.keys(snapshot.val())[0];
-                    await database.ref(`users/${userKey}`).update({
-                        fullName: fullName,
-                        phoneNumber: phoneNumber,
-                        lastActivity: new Date().toISOString()
+                        isGuest: true
                     });
                 }
 
@@ -920,12 +948,17 @@
                 // Send WhatsApp notification to admin
                 sendWhatsAppNotification(formData);
                 
-                alert('✅ Delivery request submitted successfully! Redirecting to support...');
+                alert('✅ Delivery request submitted successfully!');
                 closeDeliveryForm();
                 document.getElementById('deliveryForm').reset();
+                document.getElementById('userStatus').style.display = 'none';
                 
                 // Redirect to support page
-                window.location.href = 'support.html?email=' + encodeURIComponent(email);
+                if (email) {
+                    window.location.href = 'support.html?email=' + encodeURIComponent(email);
+                } else {
+                    window.location.href = 'support.html?customerId=' + encodeURIComponent(customerId);
+                }
                 
             } catch (error) {
                 console.error('Error submitting request:', error);
@@ -957,6 +990,13 @@
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
             renderer.setSize(width, height);
+        });
+
+        // Handle escape key to close modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeDeliveryForm();
+            }
         });
     </script>
 </body>

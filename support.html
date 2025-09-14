@@ -630,20 +630,65 @@
         let userName = '';
         let currentRequest = null;
 
-        // Get user email from URL parameters
+        // Get user information from URL parameters
         function getUserFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             userEmail = urlParams.get('email') || '';
+            const customerId = urlParams.get('customerId') || '';
             
-            if (!userEmail) {
-                // Redirect back to home if no email provided
+            if (!userEmail && !customerId) {
+                // Redirect back to home if no identifier provided
                 window.location.href = 'index.html';
                 return;
             }
             
-            loadUserData();
-            loadUserRequest();
+            if (userEmail) {
+                loadUserData();
+                loadUserRequest();
+            } else if (customerId) {
+                loadGuestData(customerId);
+                loadGuestRequest(customerId);
+            }
+            
             setupRealtimeListeners();
+        }
+
+        async function loadGuestData(customerId) {
+            try {
+                const guestRef = database.ref('guestUsers').orderByChild('customerId').equalTo(customerId);
+                const snapshot = await guestRef.once('value');
+                const guestData = snapshot.val();
+                
+                if (guestData) {
+                    const guestKey = Object.keys(guestData)[0];
+                    const guest = guestData[guestKey];
+                    userName = guest.fullName;
+                    userEmail = customerId; // Use customerId as identifier for chat
+                }
+            } catch (error) {
+                console.error('Error loading guest data:', error);
+            }
+        }
+
+        async function loadGuestRequest(customerId) {
+            try {
+                const requestRef = database.ref('deliveryRequests').orderByChild('customerId').equalTo(customerId);
+                const snapshot = await requestRef.once('value');
+                const requestData = snapshot.val();
+                
+                if (requestData) {
+                    const requestKeys = Object.keys(requestData);
+                    const latestRequestKey = requestKeys[requestKeys.length - 1];
+                    currentRequest = requestData[latestRequestKey];
+                    currentRequest.id = latestRequestKey;
+                    
+                    displayRequestDetails();
+                    updateStatusDisplay();
+                }
+            } catch (error) {
+                console.error('Error loading guest request:', error);
+                document.getElementById('requestDetails').innerHTML = '<div class="no-messages">Unable to load request details</div>';
+            }
         }
 
         async function loadUserData() {

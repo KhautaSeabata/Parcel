@@ -53,7 +53,6 @@
             padding: 30px 25px;
             position: relative;
             overflow: hidden;
-            cursor: pointer;
         }
 
         .header::before {
@@ -107,19 +106,6 @@
             box-shadow: 0 8px 16px rgba(255,107,53,0.4);
             animation: priceGlow 3s ease-in-out infinite;
             z-index: 10;
-        }
-
-        .price-tag::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #ff8a65, #ffb74d);
-            border-radius: 25px;
-            z-index: -1;
-            animation: priceRing 2s linear infinite;
         }
 
         .body {
@@ -414,144 +400,29 @@
             cursor: not-allowed;
         }
 
-        /* Admin Panel Styles */
-        .admin-panel {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-        }
-
-        .admin-content {
-            background: white;
-            margin: 2% auto;
-            padding: 0;
-            border-radius: 15px;
-            width: 95%;
-            max-width: 1000px;
-            height: 90%;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .admin-header {
-            background: linear-gradient(135deg, #1565c0, #1976d2);
-            color: white;
-            padding: 20px;
-            border-radius: 15px 15px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .admin-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .admin-close {
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .admin-body {
-            padding: 20px;
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .request-item {
-            background: #f8f9fa;
+        .user-status {
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
             border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 5px solid #4caf50;
-            position: relative;
-        }
-
-        .request-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .request-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2e7d32;
-        }
-
-        .request-time {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .request-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .request-detail {
-            font-size: 14px;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            color: #555;
-        }
-
-        .whatsapp-btn {
-            background: #25d366;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .whatsapp-btn:hover {
-            background: #20b858;
-            transform: translateY(-2px);
-        }
-
-        .loading {
+            padding: 15px;
+            margin-bottom: 20px;
             text-align: center;
-            padding: 40px;
-            color: #666;
         }
 
-        .click-counter {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .user-status.existing {
+            background: #fff3e0;
+            border-color: #ff9800;
         }
 
-        .click-counter.show {
-            opacity: 1;
+        .user-status .status-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .user-status .status-text {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
         }
 
         /* Animations */
@@ -589,11 +460,6 @@
             }
         }
 
-        @keyframes priceRing {
-            0% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.2); }
-        }
-
         @keyframes cityPulse {
             0%, 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(30,136,229,0.3); }
             50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(30,136,229,0.5); }
@@ -612,12 +478,6 @@
         @keyframes featureFloat {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-5px); }
-        }
-
-        @keyframes phoneRing {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-10deg); }
-            75% { transform: rotate(10deg); }
         }
 
         @keyframes buttonPulse {
@@ -641,8 +501,6 @@
             .poster { width: 350px; height: 580px; }
             .main-title { font-size: 32px; }
             .modal-content { width: 95%; margin: 5% auto; max-height: 90vh; }
-            .admin-content { width: 98%; margin: 1% auto; height: 95%; }
-            .request-details { grid-template-columns: 1fr; }
             .modal-body { padding: 20px; }
         }
 
@@ -654,8 +512,7 @@
 <body>
     <div class="poster-container">
         <div class="poster">
-            <div class="header" onclick="handleHeaderClick()">
-                <div class="click-counter" id="clickCounter">0/10</div>
+            <div class="header">
                 <h1 class="main-title">Kesfeng...?</h1>
                 <p class="subtitle">Need Your Parcel Delivered</p>
                 <div class="price-tag">R34.99</div>
@@ -713,7 +570,17 @@
                 <h2 class="modal-title">📦 Request Delivery</h2>
             </div>
             <div class="modal-body">
+                <div id="userStatus" class="user-status" style="display: none;">
+                    <div class="status-icon">👋</div>
+                    <p class="status-text" id="statusText">Welcome back!</p>
+                </div>
+
                 <form id="deliveryForm" onsubmit="submitDeliveryRequest(event)">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="userEmail" required placeholder="your@email.com" onblur="checkExistingUser()">
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">Full Name</label>
                         <input type="text" class="form-input" id="fullName" required placeholder="Enter your full name">
@@ -771,21 +638,6 @@
         </div>
     </div>
 
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="admin-panel">
-        <div class="admin-content">
-            <div class="admin-header">
-                <h2 class="admin-title">🔐 Admin Panel - Delivery Requests</h2>
-                <span class="admin-close" onclick="closeAdminPanel()">&times;</span>
-            </div>
-            <div class="admin-body" id="adminBody">
-                <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i> Loading requests...
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -801,10 +653,6 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-
-        // Click counter for admin access
-        let clickCount = 0;
-        const clickCounter = document.getElementById('clickCounter');
 
         // Three.js variables
         let scene, camera, renderer, deliveryPerson, package;
@@ -949,12 +797,53 @@
             renderer.render(scene, camera);
         }
 
+        // User management
+        let currentUserData = null;
+
+        async function checkExistingUser() {
+            const email = document.getElementById('userEmail').value;
+            if (!email) return;
+
+            try {
+                const userRef = database.ref('users').orderByChild('email').equalTo(email);
+                const snapshot = await userRef.once('value');
+                const userData = snapshot.val();
+
+                if (userData) {
+                    const userKey = Object.keys(userData)[0];
+                    currentUserData = userData[userKey];
+                    
+                    // Pre-fill form with existing data
+                    document.getElementById('fullName').value = currentUserData.fullName;
+                    document.getElementById('phoneNumber').value = currentUserData.phoneNumber;
+                    
+                    // Show welcome back message
+                    const statusDiv = document.getElementById('userStatus');
+                    const statusText = document.getElementById('statusText');
+                    statusDiv.className = 'user-status existing';
+                    statusText.textContent = `Welcome back, ${currentUserData.fullName}!`;
+                    statusDiv.style.display = 'block';
+                } else {
+                    // New user
+                    currentUserData = null;
+                    const statusDiv = document.getElementById('userStatus');
+                    const statusText = document.getElementById('statusText');
+                    statusDiv.className = 'user-status';
+                    statusText.textContent = 'New user - Welcome to Kesfeng!';
+                    statusDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error checking user:', error);
+            }
+        }
+
         // WhatsApp notification function
         function sendWhatsAppNotification(customerData) {
-            const adminNumber = "26651901995"; // Admin WhatsApp number
+            const adminNumber = "26651901995";
             const message = encodeURIComponent(
                 `🚨 NEW DELIVERY REQUEST 🚨\n\n` +
                 `👤 Customer: ${customerData.fullName}\n` +
+                `📧 Email: ${customerData.email}\n` +
                 `📱 Phone: ${customerData.phoneNumber}\n` +
                 `📍 Route: ${customerData.fromDistrict} → ${customerData.toDistrict}\n` +
                 `📦 Package: ${customerData.packageDescription}\n` +
@@ -962,26 +851,8 @@
                 `Please respond to this customer promptly! 🚛`
             );
             
-            // Open WhatsApp with the notification message
             const whatsappUrl = `https://wa.me/${adminNumber}?text=${message}`;
             window.open(whatsappUrl, '_blank');
-        }
-
-        // Admin access functionality
-        function handleHeaderClick() {
-            clickCount++;
-            clickCounter.textContent = `${clickCount}/10`;
-            clickCounter.classList.add('show');
-            
-            setTimeout(() => {
-                clickCounter.classList.remove('show');
-            }, 1000);
-
-            if (clickCount >= 10) {
-                openAdminPanel();
-                clickCount = 0;
-                clickCounter.textContent = '0/10';
-            }
         }
 
         // Modal functions
@@ -995,17 +866,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        function openAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            loadDeliveryRequests();
-        }
-
-        function closeAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
         // Form submission
         async function submitDeliveryRequest(event) {
             event.preventDefault();
@@ -1015,9 +875,14 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             submitBtn.disabled = true;
 
+            const email = document.getElementById('userEmail').value;
+            const fullName = document.getElementById('fullName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+
             const formData = {
-                fullName: document.getElementById('fullName').value,
-                phoneNumber: document.getElementById('phoneNumber').value,
+                email: email,
+                fullName: fullName,
+                phoneNumber: phoneNumber,
                 fromDistrict: document.getElementById('fromDistrict').value,
                 toDistrict: document.getElementById('toDistrict').value,
                 packageDescription: document.getElementById('packageDescription').value || 'No description',
@@ -1026,15 +891,41 @@
             };
 
             try {
+                // Register/Update user
+                if (!currentUserData) {
+                    const userRef = database.ref('users');
+                    await userRef.push({
+                        email: email,
+                        fullName: fullName,
+                        phoneNumber: phoneNumber,
+                        registeredAt: new Date().toISOString(),
+                        isSubscribed: true
+                    });
+                } else {
+                    // Update existing user info if changed
+                    const userRef = database.ref('users').orderByChild('email').equalTo(email);
+                    const snapshot = await userRef.once('value');
+                    const userKey = Object.keys(snapshot.val())[0];
+                    await database.ref(`users/${userKey}`).update({
+                        fullName: fullName,
+                        phoneNumber: phoneNumber,
+                        lastActivity: new Date().toISOString()
+                    });
+                }
+
+                // Submit delivery request
                 const requestRef = database.ref('deliveryRequests');
                 await requestRef.push(formData);
                 
                 // Send WhatsApp notification to admin
                 sendWhatsAppNotification(formData);
                 
-                alert('✅ Delivery request submitted successfully! We will contact you soon.');
+                alert('✅ Delivery request submitted successfully! Redirecting to support...');
                 closeDeliveryForm();
                 document.getElementById('deliveryForm').reset();
+                
+                // Redirect to support page
+                window.location.href = 'support.html?email=' + encodeURIComponent(email);
                 
             } catch (error) {
                 console.error('Error submitting request:', error);
@@ -1045,101 +936,12 @@
             }
         }
 
-        // Load delivery requests for admin
-        async function loadDeliveryRequests() {
-            const adminBody = document.getElementById('adminBody');
-            
-            try {
-                const requestsRef = database.ref('deliveryRequests');
-                const snapshot = await requestsRef.orderByChild('timestamp').once('value');
-                const requests = snapshot.val();
-
-                if (!requests) {
-                    adminBody.innerHTML = `
-                        <div class="loading">
-                            <i class="fas fa-inbox"></i>
-                            <h3>No delivery requests yet</h3>
-                            <p>Requests will appear here when customers submit them.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                const requestsArray = Object.entries(requests).reverse();
-                
-                adminBody.innerHTML = requestsArray.map(([key, request]) => `
-                    <div class="request-item">
-                        <div class="request-header">
-                            <div class="request-name">${request.fullName}</div>
-                            <div class="request-time">${new Date(request.timestamp).toLocaleString()}</div>
-                        </div>
-                        
-                        <div class="request-details">
-                            <div class="request-detail">
-                                <span class="detail-label">Phone:</span> ${request.phoneNumber}
-                            </div>
-                            <div class="request-detail">
-                                <span class="detail-label">Route:</span> ${request.fromDistrict} → ${request.toDistrict}
-                            </div>
-                            <div class="request-detail">
-                                <span class="detail-label">Package:</span> ${request.packageDescription}
-                            </div>
-                            <div class="request-detail">
-                                <span class="detail-label">Status:</span> 
-                                <span style="color: ${request.status === 'pending' ? '#ff9800' : '#4caf50'}; font-weight: 600;">
-                                    ${request.status.toUpperCase()}
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <button class="whatsapp-btn" onclick="contactOnWhatsApp('${request.phoneNumber}', '${request.fullName}', '${request.fromDistrict}', '${request.toDistrict}')">
-                            <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-                        </button>
-                    </div>
-                `).join('');
-
-            } catch (error) {
-                console.error('Error loading requests:', error);
-                adminBody.innerHTML = `
-                    <div class="loading">
-                        <i class="fas fa-exclamation-triangle" style="color: #ff5722;"></i>
-                        <h3>Error loading requests</h3>
-                        <p>Please check your internet connection and try again.</p>
-                    </div>
-                `;
-            }
-        }
-
-        // WhatsApp integration
-        function contactOnWhatsApp(phoneNumber, fullName, fromDistrict, toDistrict) {
-            // Clean phone number (remove spaces, dashes, etc.)
-            const cleanPhone = phoneNumber.replace(/[\s\-\(\)]/g, '');
-            
-            // Create WhatsApp message
-            const message = encodeURIComponent(
-                `Hello ${fullName}! 👋\n\n` +
-                `This is Kesfeng Delivery Service regarding your parcel delivery request:\n\n` +
-                `📍 Route: ${fromDistrict} → ${toDistrict}\n` +
-                `💰 Price: R34.99\n\n` +
-                `We're ready to collect and deliver your parcel. When would be a good time for pickup?\n\n` +
-                `Thank you for choosing Kesfeng! 🚛📦`
-            );
-
-            // Open WhatsApp
-            const whatsappUrl = `https://wa.me/${cleanPhone}?text=${message}`;
-            window.open(whatsappUrl, '_blank');
-        }
-
         // Close modals when clicking outside
         window.onclick = function(event) {
             const deliveryModal = document.getElementById('deliveryModal');
-            const adminPanel = document.getElementById('adminPanel');
             
             if (event.target === deliveryModal) {
                 closeDeliveryForm();
-            }
-            if (event.target === adminPanel) {
-                closeAdminPanel();
             }
         }
 
@@ -1156,14 +958,6 @@
             camera.updateProjectionMatrix();
             renderer.setSize(width, height);
         });
-
-        // Auto-refresh admin panel every 30 seconds if open
-        setInterval(() => {
-            const adminPanel = document.getElementById('adminPanel');
-            if (adminPanel.style.display === 'block') {
-                loadDeliveryRequests();
-            }
-        }, 30000);
     </script>
 </body>
 </html>
